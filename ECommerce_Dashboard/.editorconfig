@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# MVC1006: Methods containing TagHelpers must be async and return Task.
+dotnet_diagnostic.MVC1006.severity = error

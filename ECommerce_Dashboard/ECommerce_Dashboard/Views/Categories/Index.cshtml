@@ -1,0 +1,29 @@
+﻿@model IEnumerable<WebApplication1.Models.Category>
+
+<p>
+    <a onclick="createCategory()" class="btn btn-success">+Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a onclick="EditCategory(@item.ID)" class="btn btn-primary">Edit</a> |
+                <a onclick="getCategoryDetails(@item.ID)" class="btn btn-primary">Details</a> |
+                <a onclick="DeleteCategory(@item.ID)" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

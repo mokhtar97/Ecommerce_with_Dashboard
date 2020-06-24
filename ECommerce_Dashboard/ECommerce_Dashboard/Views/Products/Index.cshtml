@@ -1,0 +1,143 @@
+﻿@using PagedList.Mvc;
+@using X.PagedList.Mvc;
+@using PagedList;
+
+@model IPagedList<WebApplication1.Models.Product>
+
+
+<p>
+    <a onclick="createPoduct()" class="btn btn-success">+Create New</a>
+</p>
+<div>
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <p>
+                Find by name: <input type="text" id="search" name="SearchString" value="@ViewData["currentFilter"]" />
+                <input type="submit" value="Search" href="#" onclick="getProductsBySearch(document.getElementById('search').value)" class="btn btn-default" /> |
+                <a href="#" onclick="getProducts()" class="btn btn-primary">Back to List</a>
+            </p>
+        </div>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Quntaty)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().picture)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Category)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quntaty)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        <img src="~/images/@item.picture"
+                             class="rounded-circle"
+                             height="40" width="40"
+                             asp-append-version="true" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.description)
+                    </td>
+                    <td>
+                        @ViewBag.CatID[@item.CatID - 1].Name
+                    </td>
+                    <td>
+                        <a onclick="EditProduct(@item.ID)" class="btn btn-primary">Edit</a> |
+                        <a onclick="getProductDetails(@item.ID)" class="btn btn-primary">Details</a> |
+                        <a onclick="DeleteProduct(@item.ID)" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+    @{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    }
+    <div style="text-align:center">
+        <a href="#" onclick="getProducts(@(Model.PageNumber - 1));"
+           class="btn btn-default @prevDisabled">
+            Previous
+        </a>
+
+        <a href="#" onclick="getProducts(@(Model.PageNumber + 1));"
+           class="btn btn-default @nextDisabled">
+            Next
+        </a>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.3/signalr.min.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+
+
+    <script type="text/javascript">
+        $(function () {
+            // Create a proxy to signalr hub on web server. It reference the hub.
+            var connection = new signalR.HubConnectionBuilder().withUrl("/notificationhubs").build();
+
+            // Connect to signalr hub
+            $.connection.hub.start().done(function () {
+                console.log("Connection Started");
+                getProducts();
+            });
+
+            // Notify to client with the recent updates
+        //    notificationFromHub.client.updatedClients = function () {
+        //        getProducts();
+        //    };
+        //});
+
+
+        connection.on("updatedClients", function () {
+            getProducts();
+        });
+
+        connection.start().then(function () {
+            console.log("Connection Started");
+            getProducts();
+        }).catch(function (err) {
+            console.log("Connection ERROR");
+        });
+         function getProducts() {
+            event.preventDefault();
+            $.ajax({
+                url: "@Url.Action("Index", "Products")",
+                success: function (result) { $("#body").html(result) },
+                error: function (err) { console.log(err) }
+                });
+         }
+
+
+    </script>
+
+}

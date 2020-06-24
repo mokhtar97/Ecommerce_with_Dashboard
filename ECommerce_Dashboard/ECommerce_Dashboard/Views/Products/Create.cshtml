@@ -1,0 +1,63 @@
+﻿@model ECommerce_Dashboard.ViewModels.productVM
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data" id="frm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quntaty" class="control-label"></label>
+                <input asp-for="Quntaty" class="form-control" />
+                <span asp-validation-for="Quntaty" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="picture" class="control-label"></label>
+                <div class="custom-file">
+                    <input asp-for="picture" class="custom-file-input" id="customFile">
+                    <label class="custom-file-label" id="lb" for="customFile">Choose file</label>
+                </div>
+                <span asp-validation-for="picture" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="description" class="control-label"></label>
+                <input asp-for="description" class="form-control" />
+                <span asp-validation-for="description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CatID" class="control-label"></label>
+                <select asp-for="CatID" class="form-control" asp-items="ViewBag.CatID"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" onclick="createProductpost()" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a href="#" onclick="getProducts()" class="btn btn-primary">Back to List</a>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
